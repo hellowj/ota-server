@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="telephone=no" name="format-detection" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css">
+    <script src="/public/javascripts/qrcode/jquery.min.js"></script>
+    <script type="text/javascript" src="/public/javascripts/qrcode/jquery.qrcode.js"></script>
+    <script type="text/javascript" src="/public/javascripts/qrcode/qrcode.js"></script>
+    <title>OTA for ArcGIS Work</title>
+</head>
+<body>
+<div id="home">
+    <h3>扫描后请用浏览器打开</h3>
+    <div id="qrcodeTable"></div>
+ 
+    <h3><a id='cer' href="https://{{ip}}:{{port}}/cer/myCA.cer" style="text-decoration:underline">我用的是iPhone，如果出现【无法验证服务器身份】或【无法连接到】，请点击此链接安装证书</a>
+    </h3>
+    <ul>
+        {{#items_ios}}
+        <li>
+        	<img src="/public/ios.png" class="icon" />
+        	<div class="info">
+        		<span class="name">{{name}}</span>
+        		<div class="desc">{{description}}</div>
+        	</div>
+            <a href="javascript:;" downloadUrl="itms-services://?action=download-manifest&url=https://{{ip}}:{{port}}/plist/{{name}}" class="link">下载安装</a>
+        </li>
+        <hr/>
+        {{/items_ios}}
+    </ul>
+    <ul>
+        {{#items_android}}
+        <li>
+            <img src="/public/android.png" class="icon" />
+            <div class="info">
+                <span class="name">{{name}}</span>
+                <div class="desc">{{description}}</div>
+            </div>
+            <a href="apk/{{name}}.apk" class="link2">下载安装</a>
+        </li>
+        <hr/>
+        {{/items_android}}
+    </ul>
+</div>
+    <h3 style="text-align:center;"><a id="historyAndroidText" href="javascript:;"  onclick="history(1);" 
+        style="text-decoration:underline">查看Android历史版本</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a id="historyIOSText" href="javascript:;"  onclick="history(2);" 
+        style="text-decoration:underline;margin-left:20">查看iOS历史版本</a>
+    </h3>
+    <div id="historyAndroid" style="display:none;">
+    <ul>
+        {{#history_android}}
+        <li>
+            <img src="/public/android.png" class="icon" />
+            <div class="info">
+                <span class="name">{{name}}</span>
+                <div class="desc">{{description}}</div>
+            </div>
+            <a href="apk/{{name}}.apk" class="link2">下载安装</a>
+        </li>
+        {{/history_android}}
+    </ul>
+    </div>
+    <div id="historyIOS" style="display:none;">
+    <ul>
+        {{#history_ios}}
+        <li>
+            <img src="/public/ios.png" class="icon" />
+            <div class="info">
+                <span class="name">{{name}}</span>
+                <div class="desc">{{description}}</div>
+            </div>
+            <a href="javascript:;" downloadUrl="itms-services://?action=download-manifest&url=https://{{ip}}:{{port}}/plist/{{name}}" class="link">下载安装</a>
+        </li>
+        {{/history_ios}}
+    </ul>
+    </div>
+    <script>
+        var lastType = 0;
+    	var url = location.href;
+    	$('#qrcodeTable').qrcode({
+    		render	: "table",
+    		text	: url
+    	});
+    	$('.link').click(function(){
+            if(confirm("点击安装后会自动下载app, 请返回桌面查看")){
+                window.location.href = $(this).attr('downloadUrl');
+            }
+        });
+        function history(type){
+            var home = document.getElementById("home");
+            var android = document.getElementById("historyAndroid");
+            var ios = document.getElementById("historyIOS");
+            var androidText = document.getElementById("historyAndroidText");
+            var iosText = document.getElementById("historyIOSText");
+            //home.style.display = "none";
+            if(type == 1){
+                ios.style.display = "none";
+                android.style.display = "";
+                iosText.style.background = "";
+                androidText.style.background = "silver";
+                if(type == lastType){
+                    androidText.style.background = "";
+                    android.style.display = "none";
+                    lastType = 0;
+                }else{
+                    lastType = type;
+                }
+            }else{
+                android.style.display = "none";
+                ios.style.display = "";
+                androidText.style.background = "";
+                iosText.style.background = "silver";
+                if(type == lastType){
+                    iosText.style.background = "";
+                    ios.style.display = "none";
+                    lastType = 0;
+                }else{
+                    lastType = type;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

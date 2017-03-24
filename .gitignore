@@ -1,0 +1,8 @@
+.DS_Store
+*.ipa
+ipas/
+!put-ipa-here
+cer/
+node_modules/
+temp/
+npm-debug.log
